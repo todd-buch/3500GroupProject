@@ -23,7 +23,7 @@ def a_star_search(start, goal, get_neighbors):
          path.reverse()
          return path
 
-      closed_list.add(current_node)
+      closed_list.add(current_node) 
 
       for neighbor in get_neighbors(current_node):
          tentative_g = g[current_node] + 1  # Assuming uniform cost for simplicity
