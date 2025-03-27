@@ -1,16 +1,33 @@
-import unittest
-from a_star import a_star_search, get_neighbors
+import unittest, heuristic_functions, get_neighbors
+from a_star import a_star_search
 
-# (0, 0) (0, 1) (0, 2) (0, 3) (0, 4)
-# (1, 0) (1, 1) (1, 2) (1, 3) (1, 4)
-# (2, 0) (2, 1) (2, 2) (2, 3) (2, 4)
-# (3, 0) (3, 1) (3, 2) (3, 3) (3, 4)
-# (4, 0) (4, 1) (4, 2) (4, 3) (4, 4)
+# Example usage:
+# When we want a 2D grid, graph is equal to the size of the grid (e.g., 5 = 5x5 grid, 10 = 10x10 grid)
+# graph = 5
+# graph = {
+#     'A': [('B', 4), ('C', 2)],
+#     'B': [('A', 4), ('D', 3)],
+#     'C': [('A', 2), ('D', 5)],
+#     'D': [('B', 3), ('C', 5)]
+# }
 
-# start = (0, 0)
-# goal = (4, 4)
-# path = a_star_search(start, goal, get_neighbors)
-# print("Path:", path)
+start = (0, 0)
+goal = (4, 4)
+graph_2d = 5
+path1 = a_star_search(graph_2d, start, goal, get_neighbors.grid_2d, heuristic_functions.manhattan_distance)
+print("Test1:", path1)
+
+graph2 = {
+    'A': [('B', 4), ('C', 2)],
+    'B': [('A', 4), ('D', 3)],
+    'C': [('A', 2), ('D', 5)],
+    'D': [('B', 3), ('C', 5)]
+}
+start = 'A'
+goal = 'D'
+path2 = a_star_search(graph2, start, goal, get_neighbors.weighted_graph, heuristic_functions.zero_heuristic)
+print("Test2:", path2)
+
 class Test_a_star(unittest.TestCase):
     def test_invalid_start(self):
         '''Test A* when start node does not exist'''
