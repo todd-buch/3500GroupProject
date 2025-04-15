@@ -1,7 +1,7 @@
 import unittest
 from a_star import a_star_search
 from get_neighbors import grid_2d, weighted_graph
-from heuristic_functions import manhattan_distance, zero_heuristic
+from heuristic_functions import manhattan_distance, zero_heuristic, euclidean_distance, chebyshev_distance
 
 class TestAStarSearch(unittest.TestCase):
 
@@ -116,19 +116,49 @@ class TestAStarSearch(unittest.TestCase):
  
     def test_trivial_case(self):
         '''Test A* when graph is empty'''
-        pass
+        graph = {}
+        start = 'A'
+        goal = 'B'
+        path = a_star_search(graph, start, goal, weighted_graph, zero_heuristic)
+        self.assertIsNone(path)
 
     def test_single_node_graph(self):
         '''Test A* on a graph consisting on a singular node'''
-        pass
+        graph = {
+            'A': []
+        }
+        start = 'A'
+        goal = 'A'
+        path = a_star_search(graph, start, goal, weighted_graph, zero_heuristic)
+        self.assertEqual(path, [start])
     
     def test_disconnected_graph(self):
         '''Test A* on a disconnected graph'''
-        pass
+        graph = {
+            'A': [('B', 1)],
+            'B': [],
+            'C': [('D', 1)],
+            'D': []
+        }
+        start = 'A'
+        goal = 'C'
+        path = a_star_search(graph, start, goal, weighted_graph, zero_heuristic)
+        self.assertIsNone(path)
 
     def test_cyclic_graph(self):
         '''Test A* on a clyclic graph'''
-        pass
+        graph = {
+            'A': [('B', 1)],
+            'B': [('C', 1), ('A', 1)],  # Cycle back to A
+            'C': [('D', 1)],
+            'D': []
+        }
+        start = 'A'
+        goal = 'D'
+        path = a_star_search(graph, start, goal, weighted_graph, zero_heuristic)
+        self.assertIsNotNone(path)
+    
+    # TODO: add tests for the other heuristics
 
 if __name__ == '__main__':
     unittest.main()
