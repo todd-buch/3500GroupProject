@@ -1,4 +1,4 @@
-from math import sqrt
+import math
 
 def zero_heuristic(node, goal):
     '''Return 0 for all nodes, effectively turning A* into Dijkstra's algorithm.'''
@@ -10,7 +10,7 @@ def manhattan_distance(node, goal):
 
 def euclidean_distance(node, goal):
     '''Return the Euclidean distance between the current node and the goal node.'''
-    return sqrt( (node[0] - goal[0]) ** 2 + (node[1] - goal[1]) )
+    return math.sqrt( (node[0] - goal[0]) ** 2 + (node[1] - goal[1]) )
     
 def chebyshev_distance(node, goal):
     '''Return the Chebyshev distance between the current node and the goal node.'''
