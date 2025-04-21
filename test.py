@@ -3,13 +3,13 @@ from random import randint
 from a_star import a_star_search
 from get_neighbors import grid_2d
 from get_neighbors import grid_3d
-from heuristic_functions import manhattan_distance, zero_heuristic, euclidean_distance, chebyshev_distance
+from heuristic_functions import manhattan_distance_2d, zero_heuristic, euclidean_distance_2d, chebyshev_distance_2d
 from heuristic_functions import manhattan_distance_3d, euclidean_distance_3d, chebyshev_distance_3d
 
 heuristics_2d = {
-    "Manhattan": manhattan_distance,
-    "Euclidean": euclidean_distance,
-    "Chebyshev": chebyshev_distance,
+    "Manhattan": manhattan_distance_2d,
+    "Euclidean": euclidean_distance_2d,
+    "Chebyshev": chebyshev_distance_2d,
     "Zero": zero_heuristic
 }
 heuristics_3d = {
