@@ -96,7 +96,7 @@ class TestAStarSearch(unittest.TestCase):
         # Test when start and goal nodes are the same
         grid_size = 10
         start = (7, 7)
-        goal = (7, 7) # Goal is outside of grid bounds
+        goal = (7, 7) # Goal is the same as the start and within grid bounds
 
         # Iterate through each heuristic for 2d grids
         for name, heuristic in heuristics_2d.items():
