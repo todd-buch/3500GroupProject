@@ -2,12 +2,20 @@ import unittest
 from random import randint
 from a_star import a_star_search
 from get_neighbors import grid_2d
+from get_neighbors import grid_3d
 from heuristic_functions import manhattan_distance, zero_heuristic, euclidean_distance, chebyshev_distance
+from heuristic_functions import manhattan_distance_3d, euclidean_distance_3d, chebyshev_distance_3d
 
 heuristics_2d = {
     "Manhattan": manhattan_distance,
     "Euclidean": euclidean_distance,
     "Chebyshev": chebyshev_distance,
+    "Zero": zero_heuristic
+}
+heuristics_3d = {
+    "Manhattan": manhattan_distance_3d,
+    "Euclidean": euclidean_distance_3d,
+    "Chebyshev": chebyshev_distance_3d,
     "Zero": zero_heuristic
 }
 
@@ -129,6 +137,153 @@ class TestAStarSearch(unittest.TestCase):
                     expected_length = abs(goal[0] - start[0]) + abs(goal[1] - start[1]) + 1
                     self.assertEqual(len(path), expected_length)
 
+    def test_empty_grid_3d(self):
+        grid_size = 0
+        start = (0, 0, 0)
+        goal = (0, 0, 0)
+
+        for name, heuristic in heuristics_3d.items():
+            with self.subTest(heuristic=name):
+                path = a_star_search(grid_size, start, goal, grid_3d, heuristic)
+                self.assertIsNotNone(path)
+                self.assertEqual(path[0], start)
+                self.assertEqual(path[-1], goal)
+    
+    def test_grid_3x3x3_3d(self):
+        grid_size = 3
+        start = (0, 0, 0)
+        goal = (2, 2, 2)
+
+        for name, heuristic in heuristics_3d.items():
+            with self.subTest(heuristic=name):
+                path = a_star_search(grid_size, start, goal, grid_3d, heuristic)
+                self.assertIsNotNone(path)
+                self.assertEqual(path[0], start)
+                self.assertEqual(path[-1], goal)
+
+    def test_grid_1000x1000x1000_3d(self):
+        grid_size = 1000
+        start = (0, 0, 0)
+        goal = (49, 49, 29)
+
+        for name, heuristic in heuristics_3d.items():
+            with self.subTest(heuristic=name):
+                path = a_star_search(grid_size, start, goal, grid_3d, heuristic)
+                self.assertIsNotNone(path)
+                self.assertEqual(path[0], start)
+                self.assertEqual(path[-1], goal)
+                expected_length = abs(goal[0] - start[0]) + abs(goal[1] - start[1]) + abs(goal[2] - start[2]) + 1
+                self.assertEqual(len(path), expected_length)
+
+    def test_no_possible_path_3d(self):
+        grid_size = 10
+        start = (0, 0, 0)
+        goal = (10, 10, 10)  # Goal outside grid bounds
+
+        for name, heuristic in heuristics_3d.items():
+            with self.subTest(heuristic=name):
+                path = a_star_search(grid_size, start, goal, grid_3d, heuristic)
+                self.assertIsNotNone(path)
+                self.assertEqual(path, [])
+                self.assertEqual(len(path), 0)
+    
+    def test_start_equals_goal_3d(self):
+        grid_size = 10
+        start = (5, 5, 5)
+        goal = (5, 5, 5)
+
+        for name, heuristic in heuristics_3d.items():
+            with self.subTest(heuristic=name):
+                path = a_star_search(grid_size, start, goal, grid_3d, heuristic)
+                self.assertIsNotNone(path)
+                self.assertEqual(path[0], start)
+                self.assertEqual(path[-1], goal)
+                self.assertEqual(len(path), 1)
+
+    def test_random_grids_3d(self):
+        for _ in range(25):
+            grid_size = randint(1, 50)
+            start = (randint(0, grid_size - 1), randint(0, grid_size - 1), randint(0, grid_size - 1))
+            goal = (randint(0, grid_size - 1), randint(0, grid_size - 1), randint(0, grid_size - 1))
+
+            for name, heuristic in heuristics_3d.items():
+                with self.subTest(heuristic=name):
+                    path = a_star_search(grid_size, start, goal, grid_3d, heuristic)
+                    self.assertIsNotNone(path)
+                    self.assertEqual(path[0], start)
+                    self.assertEqual(path[-1], goal)
+                    expected_length = abs(goal[0] - start[0]) + abs(goal[1] - start[1]) + abs(goal[2] - start[2]) + 1
+                    self.assertEqual(len(path), expected_length)
+
+    def test_edge_traversal_3d(self):
+        grid_size = 5
+        start = (0, 0, 0)
+        goal = (0, 0, 4)  # Travel along edge only
+
+        for name, heuristic in heuristics_3d.items():
+            with self.subTest(heuristic=name):
+                path = a_star_search(grid_size, start, goal, grid_3d, heuristic)
+                self.assertIsNotNone(path)
+                self.assertEqual(path[0], start)
+                self.assertEqual(path[-1], goal)
+                expected_length = abs(goal[2] - start[2]) + 1
+                self.assertEqual(len(path), expected_length)
+
+    def test_corner_to_corner_3d(self):
+        grid_size = 10
+        start = (0, 0, 0)
+        goal = (9, 9, 9)  # From one corner to the opposite corner
+
+        for name, heuristic in heuristics_3d.items():
+            with self.subTest(heuristic=name):
+                path = a_star_search(grid_size, start, goal, grid_3d, heuristic)
+                self.assertIsNotNone(path)
+                self.assertEqual(path[0], start)
+                self.assertEqual(path[-1], goal)
+                expected_length = sum(abs(goal[i] - start[i]) for i in range(3)) + 1
+                self.assertEqual(len(path), expected_length)
+
+    def test_single_layer_grid_3d(self):
+        grid_size = 1
+        start = (0, 0, 0)
+        goal = (0, 0, 0)  # Only one possible node
+
+        for name, heuristic in heuristics_3d.items():
+            with self.subTest(heuristic=name):
+                path = a_star_search(grid_size, start, goal, grid_3d, heuristic)
+                self.assertEqual(path, [start])
+                self.assertEqual(len(path), 1)
+
+    def test_large_sparse_grid_3d(self):
+        grid_size = 100
+        start = (0, 0, 0)
+        goal = (0, 0, 59)  # Straight line traversal along one dimension
+
+        for name, heuristic in heuristics_3d.items():
+            with self.subTest(heuristic=name):
+                path = a_star_search(grid_size, start, goal, grid_3d, heuristic)
+                self.assertIsNotNone(path)
+                self.assertEqual(path[0], start)
+                self.assertEqual(path[-1], goal)
+                expected_length = abs(goal[2] - start[2]) + 1
+                self.assertEqual(len(path), expected_length)
+
+    def test_random_start_goal_at_boundaries_3d(self):
+        grid_size = 50
+        boundaries = [0, grid_size - 1]
+
+        for _ in range(10):
+            start = (randint(0, grid_size - 1), randint(0, grid_size - 1), boundaries[randint(0, 1)])
+            goal = (boundaries[randint(0, 1)], randint(0, grid_size - 1), randint(0, grid_size - 1))
+
+            for name, heuristic in heuristics_3d.items():
+                with self.subTest(heuristic=name, start=start, goal=goal):
+                    path = a_star_search(grid_size, start, goal, grid_3d, heuristic)
+                    self.assertIsNotNone(path)
+                    self.assertEqual(path[0], start)
+                    self.assertEqual(path[-1], goal)
+                    expected_length = sum(abs(goal[i] - start[i]) for i in range(3)) + 1
+                    self.assertEqual(len(path), expected_length)
 
 if __name__ == '__main__':
     unittest.main()
